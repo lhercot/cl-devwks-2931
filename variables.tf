@@ -32,9 +32,9 @@ variable "l3_domain" {
   type        = map(any)
 }
 
-variable "l3out" {
+variable "l3outs" {
   description = "ACI L3Out information"
-  type = object({
+  type = list(object({
     name            = string
     logical_node    = string
     policy_group_dn = string
@@ -51,7 +51,7 @@ variable "l3out" {
       rtr_id  = string
       ip      = string
     })
-  })
+  }))
 }
 
 variable "epgs" {
