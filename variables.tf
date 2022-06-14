@@ -54,40 +54,13 @@ variable "l3out" {
   })
 }
 
-variable "phys_domain_dn" {
-  type        = string
-}
-
-variable "vlan_101_gw" {
-  type        = string
-}
-
-variable "vlan_101_vlan_id" {
-  type        = string
-}
-
-variable "vlan_101_interface_1" {
-  type        = string
-}
-
-variable "vlan_101_interface_2" {
-  type        = string
-}
-
-variable "vlan_102_gw" {
-  type        = string
-}
-
-variable "vlan_102_vlan_id" {
-  type        = string
-}
-
-variable "vlan_102_interface_1" {
-  type        = string
-}
-
-variable "vlan_102_interface_2" {
-  type        = string
+variable "epgs" {
+  type = list(object({
+    vlan_id    = string
+    gw         = string
+    domain_dn  = string
+    interfaces = list(string)
+  }))
 }
 
 variable "apic" {

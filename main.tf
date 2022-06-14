@@ -34,34 +34,19 @@ resource "aci_application_profile" "WoS" {
   name      = var.anp.name
 }
 
-# EPG VLAN 101
-module "epg_bd_101" {
+# EPG VLAN 101 and 102
+module "epg_bd" {
   source = "./modules/epg_bd"
+  for_each = {
+    for v in var.epgs : "${v.vlan_id}" => v
+  }
   tenant_dn  = aci_tenant.my_tenant.id
   vrf_dn     = aci_vrf.vrf1.id
   anp_dn     = aci_application_profile.WoS.id
-  vlan_id    = var.vlan_101_vlan_id
-  gw         = var.vlan_101_gw
-  domain_dn  = var.phys_domain_dn
-  interfaces = [
-    var.vlan_101_interface_1,
-    var.vlan_101_interface_2
-  ]
-}
-
-# EPG VLAN 102
-module "epg_bd_102" {
-  source = "./modules/epg_bd"
-  tenant_dn  = aci_tenant.my_tenant.id
-  vrf_dn     = aci_vrf.vrf1.id
-  anp_dn     = aci_application_profile.WoS.id
-  vlan_id    = var.vlan_102_vlan_id
-  gw         = var.vlan_102_gw
-  domain_dn  = var.phys_domain_dn
-  interfaces = [
-    var.vlan_102_interface_1,
-    var.vlan_102_interface_2
-  ]
+  vlan_id    = each.value.vlan_id
+  gw         = each.value.gw
+  domain_dn  = each.value.domain_dn
+  interfaces = each.value.interfaces
 }
 
 # L3 Domain
