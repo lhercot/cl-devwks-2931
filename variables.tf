@@ -62,6 +62,10 @@ variable "vlan_101_gw" {
   type        = string
 }
 
+variable "vlan_101_vlan_id" {
+  type        = string
+}
+
 variable "vlan_101_interface_1" {
   type        = string
 }
@@ -71,6 +75,10 @@ variable "vlan_101_interface_2" {
 }
 
 variable "vlan_102_gw" {
+  type        = string
+}
+
+variable "vlan_102_vlan_id" {
   type        = string
 }
 

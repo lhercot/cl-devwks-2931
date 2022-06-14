@@ -28,28 +28,6 @@ resource "aci_vrf" "vrf1" {
   name      = var.vrf.name
 }
 
-resource "aci_bridge_domain" "vlan_101" {
-  tenant_dn          = aci_tenant.my_tenant.id
-  name               = "Vlan-101"
-  relation_fv_rs_ctx = aci_vrf.vrf1.id
-}
-
-resource "aci_subnet" "vlan_101" {
-  parent_dn = aci_bridge_domain.vlan_101.id
-  ip        = var.vlan_101_gw
-}
-
-resource "aci_bridge_domain" "vlan_102" {
-  tenant_dn          = aci_tenant.my_tenant.id
-  name               = "Vlan-102"
-  relation_fv_rs_ctx = aci_vrf.vrf1.id
-}
-
-resource "aci_subnet" "vlan_102" {
-  parent_dn = aci_bridge_domain.vlan_102.id
-  ip        = var.vlan_102_gw
-}
-
 # ANP
 resource "aci_application_profile" "WoS" {
   tenant_dn = aci_tenant.my_tenant.id
@@ -57,57 +35,33 @@ resource "aci_application_profile" "WoS" {
 }
 
 # EPG VLAN 101
-resource "aci_application_epg" "vlan_101" {
-  application_profile_dn = aci_application_profile.WoS.id
-  name                   = "Vlan-101"
-  relation_fv_rs_bd      = aci_bridge_domain.vlan_101.id
-  pref_gr_memb           = "include"
-}
-
-resource "aci_epg_to_domain" "vlan_101_domain_assoc" {
-  application_epg_dn = aci_application_epg.vlan_101.id
-  tdn                = var.phys_domain_dn
-}
-
-resource "aci_epg_to_static_path" "vlan_101_1" {
-  application_epg_dn = aci_application_epg.vlan_101.id
-  encap              = "vlan-1${var.seat_id}1"
-  mode               = "regular"
-  tdn                = var.vlan_101_interface_1
-}
-
-resource "aci_epg_to_static_path" "vlan_101_2" {
-  application_epg_dn = aci_application_epg.vlan_101.id
-  encap              = "vlan-1${var.seat_id}1"
-  mode               = "regular"
-  tdn                = var.vlan_101_interface_2
+module "epg_bd_101" {
+  source = "./modules/epg_bd"
+  tenant_dn  = aci_tenant.my_tenant.id
+  vrf_dn     = aci_vrf.vrf1.id
+  anp_dn     = aci_application_profile.WoS.id
+  vlan_id    = var.vlan_101_vlan_id
+  gw         = var.vlan_101_gw
+  domain_dn  = var.phys_domain_dn
+  interfaces = [
+    var.vlan_101_interface_1,
+    var.vlan_101_interface_2
+  ]
 }
 
 # EPG VLAN 102
-resource "aci_application_epg" "vlan_102" {
-  application_profile_dn = aci_application_profile.WoS.id
-  name                   = "Vlan-102"
-  relation_fv_rs_bd      = aci_bridge_domain.vlan_102.id
-  pref_gr_memb           = "include"
-}
-
-resource "aci_epg_to_domain" "vlan_102_domain_assoc" {
-  application_epg_dn = aci_application_epg.vlan_102.id
-  tdn                = var.phys_domain_dn
-}
-
-resource "aci_epg_to_static_path" "vlan_102_1" {
-  application_epg_dn = aci_application_epg.vlan_102.id
-  encap              = "vlan-1${var.seat_id}2"
-  mode               = "regular"
-  tdn                = var.vlan_102_interface_1
-}
-
-resource "aci_epg_to_static_path" "vlan_102_2" {
-  application_epg_dn = aci_application_epg.vlan_102.id
-  encap              = "vlan-1${var.seat_id}2"
-  mode               = "regular"
-  tdn                = var.vlan_102_interface_2
+module "epg_bd_102" {
+  source = "./modules/epg_bd"
+  tenant_dn  = aci_tenant.my_tenant.id
+  vrf_dn     = aci_vrf.vrf1.id
+  anp_dn     = aci_application_profile.WoS.id
+  vlan_id    = var.vlan_102_vlan_id
+  gw         = var.vlan_102_gw
+  domain_dn  = var.phys_domain_dn
+  interfaces = [
+    var.vlan_102_interface_1,
+    var.vlan_102_interface_2
+  ]
 }
 
 # L3 Domain

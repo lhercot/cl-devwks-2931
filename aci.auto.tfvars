@@ -5,10 +5,12 @@ anp    = { name = "WoS" }
 phys_domain_dn = "uni/phys-phys"
 
 vlan_101_gw = "10.1.101.254/24"
+vlan_101_vlan_id = "101"
 vlan_101_interface_1 = "topology/pod-1/paths-101/pathep-[eth1/1]"
 vlan_101_interface_2 = "topology/pod-1/paths-101/pathep-[eth1/2]"
 
 vlan_102_gw = "10.1.102.254/24"
+vlan_102_vlan_id = "102"
 vlan_102_interface_1 = "topology/pod-1/paths-101/pathep-[eth1/11]"
 vlan_102_interface_2 = "topology/pod-1/paths-101/pathep-[eth1/12]"
 
